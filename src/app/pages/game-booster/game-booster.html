@@ -1,0 +1,158 @@
+<div class="page">
+  <app-gb-page-header />
+  <app-boost-banner />
+
+  <div class="telemetry-grid">
+    <app-telemetry-card
+      kind="cpu"
+      title="CPU Core"
+      device="AMD RYZEN 7 7800X3D"
+      badge="V-Cache Ativo"
+      icon="memory"
+      iconColor="primary"
+      primaryValue="4.85"
+      primaryUnit="GHz"
+      secondary="34% Uso"
+      [sparkline]
+      footerLabel="Temperatura"
+      footerValue="58°C"
+    />
+
+    <app-telemetry-card
+      kind="gpu"
+      title="GPU Core"
+      device="NVIDIA GEFORCE RTX 4080"
+      badge="DLSS 3.5"
+      icon="developer_board"
+      iconColor="emerald"
+      primaryValue="18%"
+      primaryUnit="Carga"
+      secondary="VRAM: 4.2/16 GB"
+      [bars]="[
+        { label: 'Utilização', value: 18, tone: 'emerald' },
+        { label: 'Ventoinhas', value: 42, tone: 'sky' }
+      ]"
+      footerLabel="Hotspot / Core"
+      footerValue="49°C / 54°C"
+    />
+
+    <app-telemetry-card
+      kind="ram"
+      title="Memória RAM"
+      device="32 GB DDR5 6000MHz"
+      badge="XMP 3.0"
+      icon="memory_alt"
+      iconColor="purple"
+      primaryValue="9.8"
+      primaryUnit="/ 32 GB"
+      secondary="30.6%"
+      [segments]="[
+        { width: 30, tone: '#0ea5e9' },
+        { width: 14, tone: 'color-mix(in srgb, #a78bfa 80%, transparent)' },
+        { width: 56, tone: 'var(--surface-highest)' }
+      ]"
+      [legend]="['Jogos 6.4G', 'Cache 3.4G', 'Livre 22.2G']"
+      actionLabel="Limpar Cache de RAM"
+      actionIcon="cleaning_services"
+    />
+
+    <app-telemetry-card
+      kind="storage"
+      title="NVMe Gen4 SSD"
+      device="SAMSUNG 990 PRO 2TB"
+      badge="DirectStorage"
+      icon="hard_drive"
+      iconColor="sky"
+      [stats]="[
+        { label: 'LEITURA', value: '7.450 MB/s' },
+        { label: 'ESCRITA', value: '6.900 MB/s' }
+      ]"
+      footerLabel="Saúde SMART: 100% OK"
+      footerValue="41°C"
+    />
+  </div>
+
+  <section class="optimizers">
+    <app-section-header
+      title="Módulos de Otimização & Hardware Engine"
+      icon="tune"
+      subtitle="Alterações aplicadas instantaneamente sem reinício"
+    />
+    <div class="optimizer-grid">
+      <app-optimizer-module
+        title="Prioridade de Processo"
+        subtitle="Agendamento Real-Time"
+        description="Eleva threads do jogo ativo para classe prioritária, prevenindo quedas por filas do sistema."
+        icon="priority_high"
+        iconColor="primary"
+        footerLabel="Estado"
+        footerValue="Prioridade Alta (Auto)"
+      />
+      <app-optimizer-module
+        title="Otimizador de Rede"
+        subtitle="Nagle Algorithm Bypass"
+        description="Desativa agregação de pacotes TCP e desativa estrangulamento de rede para menor jitter."
+        icon="lan"
+        iconColor="emerald"
+        footerLabel="Buffer Bloat"
+        footerValue="Nota A+ (0.4ms)"
+      />
+      <app-optimizer-module
+        title="Plano de Energia Apex"
+        subtitle="Zero Core Parking"
+        description="Previne estados C-State em núcleos ativos, mantendo clock contínuo de barramento sem quedas."
+        icon="bolt"
+        iconColor="amber"
+        footerLabel="Modo Atual"
+        footerValue="Desempenho Máximo"
+      />
+      <app-optimizer-module
+        title="Supressão de Background"
+        subtitle="14 Serviços Pausados"
+        description="Suspende Windows Update e telemetrias secundárias enquanto joga, restaurando ao fechar."
+        icon="pause_circle"
+        iconColor="purple"
+        footerLabel="Serviços Retidos"
+        footerValue="14 Atividades"
+      />
+      <app-optimizer-module
+        wide
+        title="Resizable BAR & Barramento GPU"
+        subtitle="PCIe 4.0 x16 Nativo - Ativo"
+        description="Acesso direto da CPU a toda a memória de textura da GPU. Minimiza o tempo de streaming em jogos de mundo aberto."
+        icon="hub"
+        iconColor="sky"
+        [showToggle]="false"
+        badge="Sincronizado"
+        [metrics]="[
+          { label: 'Janela BAR', value: '16.384 MB' },
+          { label: 'Largura de Banda', value: '31.5 GB/s' },
+          { label: 'Driver Verificado', value: 'v552.22' }
+        ]"
+      />
+    </div>
+  </section>
+
+  <section class="games">
+    <app-section-header title="Jogos Recentes Detectados" icon="sports_esports" iconColor="muted">
+      <app-button variant="secondary" icon="refresh">Escanear Diretórios</app-button>
+    </app-section-header>
+    <div class="games-grid">
+      @for (game of games; track game.title) {
+        <app-game-card
+          [title]="game.title"
+          [version]="game.version"
+          [tag]="game.tag"
+          [imageUrl]="game.imageUrl"
+          [leftValue]="game.leftValue"
+          [rightLabel]="game.rightLabel"
+          [rightValue]="game.rightValue"
+          [rightUnit]="game.rightUnit"
+          [rightTone]="game.rightTone ?? 'default'"
+          [metaLeft]="game.metaLeft"
+          [metaRight]="game.metaRight"
+        />
+      }
+    </div>
+  </section>
+</div>

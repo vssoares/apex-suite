@@ -1,0 +1,49 @@
+<app-panel>
+  <div class="head">
+    <div class="title">
+      <app-icon name="tune" [size]="18" color="sky" />
+      <h2>Ajuste Fino de Imagem</h2>
+    </div>
+    <span class="tag">DSP v4 Core</span>
+  </div>
+
+  <div class="sliders">
+    <app-slider
+      label="Brilho do Painel (OLED Luminance)"
+      icon="brightness_6"
+      [(value)]="brightness"
+      [hints]="['0% (0.001 Nits)', '50% (SDR STD)', '100% (PEAK 1000 Nits)']"
+    />
+    <app-slider
+      label="Contraste Dinâmico"
+      icon="contrast"
+      [(value)]="contrast"
+      [hints]="['0% Suave', '50% Neutro', '100% Agudo']"
+    />
+    <app-slider
+      label="Black Equalizer (Visibilidade em Sombras)"
+      icon="hdr_strong"
+      iconColor="sky"
+      tag="Competitivo"
+      [(value)]="blackEq"
+      [max]="20"
+      [formatter]="blackEqFmt"
+      [hints]="['0 (Pretos Naturais)', '10 (Equilibrado)', '20 (Máx. Deteção)']"
+    />
+    <app-slider
+      label="Saturação Digital (Digital Vibrance)"
+      icon="palette"
+      [(value)]="vibrance"
+      [min]="-50"
+      [max]="50"
+      [formatter]="vibranceFmt"
+      [hints]="['-50% Preto & Branco', '0% Padrão Neutro', '+50% Vívido']"
+    />
+    <app-slider
+      label="Nitidez & Clareza Adaptativa"
+      icon="filter_hdr"
+      [(value)]="sharpness"
+      [hints]="['0% Neutro', '50% Balanceado', '100% Alta Definição']"
+    />
+  </div>
+</app-panel>

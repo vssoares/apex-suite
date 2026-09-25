@@ -1,0 +1,69 @@
+<app-panel>
+  <div class="head">
+    <div class="title">
+      <app-icon name="visibility" [size]="18" color="sky" />
+      <h2>Pré-Visualização Comparativa</h2>
+    </div>
+    <app-badge>Split View</app-badge>
+  </div>
+
+  <div class="viewport">
+    <img [src]="afterImage" alt="Preview calibrado" />
+    <div class="before">
+      <img [src]="beforeImage" alt="Preview padrão" />
+      <span class="label left mono">PADRÃO WINDOWS</span>
+    </div>
+    <div class="split">
+      <div class="handle">
+        <app-icon name="drag_indicator" [size]="13" />
+      </div>
+    </div>
+    <span class="label right mono">APEX TUNED</span>
+    <div class="watermark">
+      <span>
+        <app-status-dot tone="success" />
+        Black EQ Ativo
+      </span>
+      <span class="muted">Motor LUT em tempo real</span>
+    </div>
+  </div>
+
+  <div class="patterns">
+    <div class="patterns-head">
+      <span>Padrão de Calibração: Tons & Gradientes</span>
+      <span class="mono muted">0 a 255 RGB Steps</span>
+    </div>
+    <div class="grayscale">
+      <div style="background:#050505">0</div>
+      <div style="background:#141414"></div>
+      <div style="background:#242424"></div>
+      <div style="background:#363636"></div>
+      <div style="background:#4a4a4a"></div>
+      <div style="background:#5f5f5f"></div>
+      <div style="background:#767676"></div>
+      <div style="background:#8f8f8f"></div>
+      <div style="background:#a9a9a9"></div>
+      <div style="background:#c4c4c4"></div>
+      <div style="background:#dedede"></div>
+      <div style="background:#ffffff;color:#0f172a;font-weight:700">255</div>
+    </div>
+    <div class="spectrum"></div>
+    <div class="uniformity">
+      <div class="u-left">
+        <app-icon name="gradient" [size]="16" color="muted" />
+        <span>Teste de Uniformidade & Banding</span>
+      </div>
+      <app-button variant="secondary">Tela Cheia</app-button>
+    </div>
+    <div class="luma">
+      <div>
+        <span class="label-sm">Luminância Calculada</span>
+        <span class="mono value">245.8 cd/m²</span>
+      </div>
+      <div class="right">
+        <span class="label-sm">Latência Adicionada</span>
+        <span class="mono value primary">0.02 ms</span>
+      </div>
+    </div>
+  </div>
+</app-panel>

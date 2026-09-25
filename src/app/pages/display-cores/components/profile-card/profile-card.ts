@@ -1,0 +1,23 @@
+import { booleanAttribute, Component, input } from '@angular/core';
+import { Icon } from '../../../../shared/ui/icon/icon';
+import { Badge } from '../../../../shared/ui/badge/badge';
+import { Panel } from '../../../../shared/ui/panel/panel';
+
+@Component({
+  selector: 'app-profile-card',
+  imports: [Icon, Badge, Panel],
+  templateUrl: './profile-card.html',
+  styleUrl: './profile-card.scss',
+})
+export class ProfileCard {
+  readonly title = input.required<string>();
+  readonly description = input('');
+  readonly icon = input('verified');
+  readonly active = input(false, { transform: booleanAttribute });
+  readonly code = input('');
+  readonly leftLabel = input('');
+  readonly leftValue = input('');
+  readonly rightLabel = input('');
+  readonly rightValue = input('');
+  readonly rightTone = input<'default' | 'primary'>('default');
+}

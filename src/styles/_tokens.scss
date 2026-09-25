@@ -1,0 +1,57 @@
+:root {
+  /* Surfaces */
+  --surface-lowest: #0b0d10;
+  --surface: #111317;
+  --surface-low: #16181d;
+  --surface-container: #1c1f24;
+  --surface-high: #23272e;
+  --surface-highest: #2b3038;
+
+  /* Borders */
+  --outline: #3b424d;
+  --outline-variant: #262b33;
+  --outline-focus: #384252;
+
+  /* Accents */
+  --primary: #38bdf8;
+  --primary-strong: #0ea5e9;
+  --primary-hover: #7dd3fc;
+  --primary-active: #0284c7;
+  --secondary: #34d399;
+  --tertiary: #a78bfa;
+  --warning: #f59e0b;
+  --error: #f87171;
+  --emerald: #34d399;
+  --sky: #38bdf8;
+  --purple: #a78bfa;
+  --amber: #fbbf24;
+
+  /* Text */
+  --on-surface: #f1f5f9;
+  --on-surface-variant: #94a3b8;
+  --on-surface-muted: #64748b;
+  --on-primary: #0f172a;
+
+  /* Radius */
+  --radius-sm: 0.125rem;
+  --radius: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 0.75rem;
+  --space-lg: 1.25rem;
+  --space-xl: 1.75rem;
+
+  /* Layout */
+  --sidebar-width: 16rem;
+  --titlebar-height: 3rem;
+
+  /* Typography */
+  --font-sans: 'Poppins', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}

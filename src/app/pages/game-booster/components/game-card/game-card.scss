@@ -1,0 +1,99 @@
+.cover {
+  position: relative;
+  height: 9rem;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--surface), color-mix(in srgb, var(--surface) 40%, transparent), transparent);
+}
+
+.tag {
+  position: absolute;
+  top: 0.625rem;
+  left: 0.625rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  border: 1px solid color-mix(in srgb, var(--outline-variant) 60%, transparent);
+  font-size: 0.625rem;
+  font-weight: 500;
+}
+
+.cover-footer {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+h4 {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.cover-footer .mono {
+  font-size: 0.625rem;
+  color: var(--on-surface-variant);
+}
+
+.body {
+  padding: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--surface-low);
+  border: 1px solid color-mix(in srgb, var(--outline-variant) 50%, transparent);
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+}
+
+.right {
+  text-align: right;
+}
+
+.label {
+  display: block;
+  font-size: 0.625rem;
+  color: var(--on-surface-variant);
+}
+
+.value {
+  font-weight: 600;
+}
+
+.value.success {
+  color: var(--emerald);
+}
+
+.unit {
+  font-size: 0.625rem;
+  font-weight: 400;
+  color: var(--on-surface-variant);
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+  color: var(--on-surface-variant);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}

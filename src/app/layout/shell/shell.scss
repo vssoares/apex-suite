@@ -1,0 +1,20 @@
+:host {
+  display: block;
+  height: 100vh;
+  background: var(--surface-lowest);
+}
+
+.content-frame {
+  margin-left: var(--sidebar-width);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+  margin-top: var(--titlebar-height);
+  height: calc(100% - var(--titlebar-height));
+  padding: 0 1.5rem 2.5rem;
+  background: var(--surface-lowest);
+}

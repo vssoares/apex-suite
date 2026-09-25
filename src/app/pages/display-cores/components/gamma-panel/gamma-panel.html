@@ -1,0 +1,82 @@
+<app-panel>
+  <div class="head">
+    <div class="title">
+      <app-icon name="tune" [size]="18" color="sky" />
+      <h2>Gama & Canais RGB Cromáticos</h2>
+    </div>
+    <span class="tag">Hardware LUT Calibrated</span>
+  </div>
+
+  <div class="stack">
+    <div class="gamma-box">
+      <div class="gamma-head">
+        <span>Curva de Gama Alvo</span>
+        <span class="mono">2.2 sRGB Padrão</span>
+      </div>
+      <div class="gamma-grid">
+        @for (g of gammas; track g) {
+          <button
+            type="button"
+            class="gamma-btn mono"
+            [class.active]="selectedGamma() === g"
+            (click)="selectedGamma.set(g)"
+          >
+            {{ g }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <app-slider
+      label="Temperatura de Cor (Kelvin)"
+      [(value)]="kelvin"
+      [min]="4500"
+      [max]="9500"
+      [step]="50"
+      [formatter]="kelvinFmt"
+      [hints]="['4500K (Quente)', '6500K (D65 Neutro)', '9500K (Frio)']"
+    />
+
+    <div class="rgb">
+      <div class="channel">
+        <div class="ch-head">
+          <span class="mono">Canal R</span>
+          <span class="mono">{{ channelR() }}%</span>
+        </div>
+        <input
+          type="range"
+          min="50"
+          max="150"
+          [value]="channelR()"
+          (input)="onChannel('r', $event)"
+        />
+      </div>
+      <div class="channel">
+        <div class="ch-head">
+          <span class="mono">Canal G</span>
+          <span class="mono">{{ channelG() }}%</span>
+        </div>
+        <input
+          type="range"
+          min="50"
+          max="150"
+          [value]="channelG()"
+          (input)="onChannel('g', $event)"
+        />
+      </div>
+      <div class="channel">
+        <div class="ch-head">
+          <span class="mono">Canal B</span>
+          <span class="mono">{{ channelB() }}%</span>
+        </div>
+        <input
+          type="range"
+          min="50"
+          max="150"
+          [value]="channelB()"
+          (input)="onChannel('b', $event)"
+        />
+      </div>
+    </div>
+  </div>
+</app-panel>

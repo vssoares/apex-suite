@@ -1,0 +1,14 @@
+<div class="strip">
+  @for (spec of specs(); track spec.label) {
+    <div class="cell">
+      <span class="label">{{ spec.label }}</span>
+      <span class="value mono">
+        @if (spec.icon) {
+          <app-icon [name]="spec.icon" [size]="14" color="sky" />
+        }
+        {{ spec.value }}
+      </span>
+      <span class="detail mono" [class]="spec.detailTone ?? 'muted'">{{ spec.detail }}</span>
+    </div>
+  }
+</div>

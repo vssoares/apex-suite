@@ -1,0 +1,33 @@
+<app-panel [padded]="false" interactive>
+  <div class="cover" [style.background-image]="'url(' + imageUrl() + ')'">
+    <div class="overlay"></div>
+    @if (tag()) {
+      <span class="tag">{{ tag() }}</span>
+    }
+    <div class="cover-footer">
+      <h4>{{ title() }}</h4>
+      <span class="mono">{{ version() }}</span>
+    </div>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <div>
+        <span class="label">{{ leftLabel() }}</span>
+        <span class="value mono">
+          {{ leftValue() }} <span class="unit">{{ leftUnit() }}</span>
+        </span>
+      </div>
+      <div class="right">
+        <span class="label">{{ rightLabel() }}</span>
+        <span class="value mono" [class.success]="rightTone() === 'success'">
+          {{ rightValue() }} <span class="unit">{{ rightUnit() }}</span>
+        </span>
+      </div>
+    </div>
+    <div class="meta">
+      <span>{{ metaLeft() }}</span>
+      <span>{{ metaRight() }}</span>
+    </div>
+    <app-button variant="ghost" icon="play_arrow" block>Lançar com Boost</app-button>
+  </div>
+</app-panel>

@@ -1,0 +1,21 @@
+<div class="switcher">
+  @for (display of displays(); track display.id) {
+    <button type="button" class="display" [class.active]="display.active">
+      <div class="top">
+        <span class="role" [class.active]="display.active">
+          <app-status-dot [tone]="display.active ? 'primary' : 'muted'" />
+          {{ display.role }}
+        </span>
+        <app-badge [tone]="display.badgeTone === 'success' ? 'success' : 'neutral'">
+          {{ display.panel }}
+        </app-badge>
+      </div>
+      <div class="name">{{ display.name }}</div>
+      <div class="specs mono">
+        <span>{{ display.connection }}</span>
+        <span class="sep">•</span>
+        <span [class.bright]="display.active">{{ display.resolution }}</span>
+      </div>
+    </button>
+  }
+</div>

@@ -1,0 +1,42 @@
+<app-panel interactive>
+  <div class="module">
+    <div class="head">
+      <div class="identity">
+        <div class="icon-wrap" [attr.data-color]="iconColor()">
+          <app-icon [name]="icon()" [size]="17" [color]="iconColor()" />
+        </div>
+        <div>
+          <h4>{{ title() }}</h4>
+          @if (subtitle()) {
+            <span class="subtitle" [class.success]="subtitle().includes('Ativo')">{{
+              subtitle()
+            }}</span>
+          }
+        </div>
+      </div>
+      @if (showToggle()) {
+        <app-toggle [checked]="enabled()" />
+      } @else if (badge()) {
+        <app-badge>{{ badge() }}</app-badge>
+      }
+    </div>
+    <p>{{ description() }}</p>
+    @if (metrics().length) {
+      <div class="metrics">
+        @for (m of metrics(); track m.label) {
+          <div>
+            <span class="m-label">{{ m.label }}</span>
+            <span class="m-value mono">{{ m.value }}</span>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="footer">
+        <span>{{ footerLabel() }}</span>
+        <span class="footer-value" [class.success]="footerValue().includes('A+')">{{
+          footerValue()
+        }}</span>
+      </div>
+    }
+  </div>
+</app-panel>

@@ -1,0 +1,101 @@
+<app-panel interactive>
+  <div class="card-body">
+    <div class="top">
+      <div class="title-row">
+        <div class="title">
+          <app-icon [name]="icon()" [size]="18" [color]="iconColor()" />
+          <span>{{ title() }}</span>
+        </div>
+        @if (badge()) {
+          <app-badge>{{ badge() }}</app-badge>
+        }
+      </div>
+      <div class="device">{{ device() }}</div>
+      <div class="primary">
+        <span class="value mono">
+          {{ primaryValue() }}
+          @if (primaryUnit()) {
+            <span class="unit">{{ primaryUnit() }}</span>
+          }
+        </span>
+        @if (secondary()) {
+          <span class="secondary mono">{{ secondary() }}</span>
+        }
+      </div>
+
+      @if (sparkline()) {
+        <div class="sparkline">
+          <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+            <path
+              d="M0,28 Q20,24 40,30 T80,18 T120,22 T160,10 L200,8 L200,40 L0,40 Z"
+              fill="currentColor"
+              fill-opacity="0.1"
+            />
+            <path
+              d="M0,28 Q20,24 40,30 T80,18 T120,22 T160,10 L200,8"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+            />
+          </svg>
+        </div>
+      }
+
+      @if (bars().length) {
+        <div class="bars">
+          @for (bar of bars(); track bar.label) {
+            <div class="bar">
+              <div class="bar-meta">
+                <span>{{ bar.label }}</span>
+                <span class="mono">{{ bar.value }}%</span>
+              </div>
+              <app-progress-bar [value]="bar.value" [tone]="bar.tone" />
+            </div>
+          }
+        </div>
+      }
+
+      @if (segments().length) {
+        <div class="segments-wrap">
+          <div class="segments">
+            @for (seg of segments(); track $index) {
+              <div class="seg" [style.width.%]="seg.width" [style.background]="seg.tone"></div>
+            }
+          </div>
+          @if (legend().length) {
+            <div class="legend">
+              @for (item of legend(); track item) {
+                <span>{{ item }}</span>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      @if (stats().length) {
+        <div class="stats">
+          @for (stat of stats(); track stat.label) {
+            <div class="stat">
+              <span class="stat-label">{{ stat.label }}</span>
+              <span class="stat-value mono">{{ stat.value }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    @if (actionLabel()) {
+      <app-button block [icon]="actionIcon()" variant="secondary">{{ actionLabel() }}</app-button>
+    } @else if (footerLabel()) {
+      <div class="footer">
+        <span class="footer-label">
+          @if (kind() === 'cpu') {
+            <app-icon name="thermostat" [size]="14" color="muted" />
+          }
+          {{ footerLabel() }}
+        </span>
+        <span class="footer-value mono">{{ footerValue() }}</span>
+      </div>
+    }
+  </div>
+</app-panel>

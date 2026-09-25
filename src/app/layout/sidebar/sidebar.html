@@ -1,0 +1,44 @@
+<aside class="sidebar">
+  <div class="top">
+    <div class="brand">
+      <div class="logo">A</div>
+      <span>Apex Suite</span>
+    </div>
+
+    <div class="nav-label">Menu Principal</div>
+
+    <nav>
+      @for (item of navItems; track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <app-icon [name]="item.icon" [size]="18" />
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+  </div>
+
+  <div class="footer">
+    <div class="row">
+      <span class="muted">Driver Core</span>
+      <span class="mono">v552.22</span>
+    </div>
+    <div class="temp">
+      <div class="temp-left">
+        <app-icon name="thermostat" [size]="15" color="muted" />
+        <span class="muted">GPU Temp</span>
+      </div>
+      <span class="mono success">54°C</span>
+    </div>
+    <div class="row">
+      <span class="muted">Perfil Ativo</span>
+      <span class="profile">
+        <app-status-dot tone="success" />
+        Ultra
+      </span>
+    </div>
+  </div>
+</aside>

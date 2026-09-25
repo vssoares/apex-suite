@@ -1,0 +1,29 @@
+<header class="titlebar">
+  <div class="left">
+    <div class="chip">
+      <app-status-dot tone="success" />
+      <span>Boost: Ativo</span>
+    </div>
+    <div class="chip muted">
+      <span>Overlay FPS</span>
+      <span class="on mono">ON</span>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="avatar">
+      <app-icon name="person" [size]="16" color="muted" />
+    </div>
+    <div class="window-controls">
+      <button type="button" (click)="minimize()" aria-label="Minimizar">
+        <app-icon name="minimize" [size]="15" color="muted" />
+      </button>
+      <button type="button" (click)="maximize()" aria-label="Maximizar">
+        <app-icon name="crop_square" [size]="15" color="muted" />
+      </button>
+      <button type="button" class="close" (click)="close()" aria-label="Fechar">
+        <app-icon name="close" [size]="15" color="muted" />
+      </button>
+    </div>
+  </div>
+</header>

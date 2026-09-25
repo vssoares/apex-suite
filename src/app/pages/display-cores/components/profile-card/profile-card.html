@@ -1,0 +1,23 @@
+<app-panel interactive [active]="active()">
+  <div class="card">
+    <div class="head">
+      <div class="icon" [class.active]="active()">
+        <app-icon [name]="icon()" [size]="18" [color]="active() ? 'sky' : 'muted'" />
+      </div>
+      @if (active()) {
+        <app-badge tone="primary">Ativo</app-badge>
+      } @else {
+        <span class="code mono">{{ code() }}</span>
+      }
+    </div>
+    <h4>{{ title() }}</h4>
+    <p>{{ description() }}</p>
+    <div class="footer mono">
+      <span>{{ leftLabel() }}: <strong>{{ leftValue() }}</strong></span>
+      <span>
+        {{ rightLabel() }}:
+        <strong [class.primary]="rightTone() === 'primary'">{{ rightValue() }}</strong>
+      </span>
+    </div>
+  </div>
+</app-panel>

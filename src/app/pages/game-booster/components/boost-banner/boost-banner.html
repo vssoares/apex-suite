@@ -1,0 +1,29 @@
+<div class="banner">
+  <div class="copy">
+    <div class="pill">
+      <app-icon name="bolt" [size]="15" color="primary" />
+      <span>Pipeline de Sincronia Ultra-Rápida</span>
+    </div>
+    <h2>Otimização Global em Um Clique</h2>
+    <p>
+      Suspenda processos secundários com um comando, maximize a largura de banda de memória PCIe, e
+      sincronize núcleos 3D V-Cache para máxima cadência de quadros estáveis.
+    </p>
+    <div class="gains">
+      @for (gain of gains; track gain.label) {
+        <div class="gain">
+          <span class="label">{{ gain.label }}</span>
+          <span class="value" [class]="gain.tone">{{ gain.value }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="cta">
+    <app-button variant="boost" icon="bolt" [iconSize]="18">Ativar Boost Máximo</app-button>
+    <div class="ready">
+      <app-status-dot tone="success" />
+      <span>Pronto para injeção de perfil de núcleo</span>
+    </div>
+  </div>
+</div>
