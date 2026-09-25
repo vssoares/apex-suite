@@ -44,7 +44,12 @@ jobs:
 
       - name: List release artifacts
         shell: bash
-        run: ls -lah release/
+        run: |
+          ls -lah release/
+          test -n "$(ls release/*.exe 2>/dev/null)" || {
+            echo "ERROR: nenhum .exe gerado em release/"
+            exit 1
+          }
 
       - name: Upload GitHub Release
         uses: softprops/action-gh-release@v2
@@ -52,6 +57,7 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
           generate_release_notes: true
+          fail_on_unmatched_files: true
           files: |
             release/*.exe
             release/*.blockmap

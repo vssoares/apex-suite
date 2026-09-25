@@ -49,13 +49,26 @@ export class DisplayColor {
     return `Perfil: ${name} (${displayName})`;
   });
 
+  private externalProfileOff: (() => void) | null = null;
+
   constructor() {
     void this.loadDisplays();
+    this.listenExternalProfileApply();
     this.destroyRef.onDestroy(() => {
       if (this.applyTimer) {
         clearTimeout(this.applyTimer);
         this.applyTimer = null;
       }
+      this.externalProfileOff?.();
+    });
+  }
+
+  private listenExternalProfileApply(): void {
+    const api = window.electronAPI;
+    if (!api?.onProfileApply) return;
+    this.externalProfileOff = api.onProfileApply((payload) => {
+      this.settingsSignal.set({ ...payload.settings });
+      this.statusSignal.set(payload.message);
     });
   }
 
@@ -121,6 +134,7 @@ export class DisplayColor {
       ...preset.settings,
       profileId: preset.id,
     });
+    void window.electronAPI?.recordRecentProfile?.(preset.id);
     this.scheduleApply(true);
   }
 

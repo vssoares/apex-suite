@@ -1,6 +1,6 @@
 {
   "name": "apex-suite",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Apex Suite — desktop gaming utility",
   "author": "vssoares",
   "private": true,
@@ -24,7 +24,7 @@
     "appId": "com.apexsuite.app",
     "productName": "Apex Suite",
     "files": [
-      "dist/apex-suite/browser/**/*",
+      "dist/**/*",
       "dist-electron/**/*",
       "package.json"
     ],
