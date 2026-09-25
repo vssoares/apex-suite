@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { SystemInfo } from '../../core/system-info';
 import { Sidebar } from '../sidebar/sidebar';
 import { Titlebar } from '../titlebar/titlebar';
 
@@ -9,4 +10,7 @@ import { Titlebar } from '../titlebar/titlebar';
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
 })
-export class Shell {}
+export class Shell {
+  /** Starts live system polling for the whole app shell. */
+  private readonly systemInfo = inject(SystemInfo);
+}

@@ -9,6 +9,12 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
+  align-items: stretch;
+}
+
+.telemetry-grid > * {
+  min-height: 0;
+  height: 100%;
 }
 
 .optimizers,

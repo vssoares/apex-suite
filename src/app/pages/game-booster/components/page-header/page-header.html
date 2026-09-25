@@ -2,15 +2,19 @@
   <div class="intro">
     <div class="badges">
       <app-badge tone="primary">Apex Engine v4.8</app-badge>
-      <app-badge tone="success">Modo Turbo Pronto</app-badge>
+      <app-badge tone="success">Monitoramento Ativo</app-badge>
     </div>
     <h1>{{ title() }}</h1>
     <p>{{ description() }}</p>
   </div>
 
   <div class="telemetry">
-    <app-metric label="DPC Latency" value="18.4" unit="µs" tone="success" />
-    <app-metric label="P-Core Freq" value="4.85" unit="GHz" />
-    <app-metric label="Processos Idle" value="92" unit="/ 143" />
+    <app-metric label="CPU Uso" [value]="cpuUsage()" unit="%" tone="success" />
+    <app-metric label="CPU Freq" [value]="cpuSpeed()" unit="GHz" />
+    <app-metric
+      label="Processos Idle"
+      [value]="processesIdle()"
+      [unit]="'/ ' + processesTotal()"
+    />
   </div>
 </div>

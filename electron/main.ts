@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import * as path from 'path';
+import { collectSystemSnapshot } from './system-info';
 
 const isDev = !app.isPackaged;
 let mainWindow: BrowserWindow | null = null;
@@ -26,7 +27,7 @@ function createWindow(): void {
   if (isDev) {
     void mainWindow.loadURL('http://localhost:4444');
   } else {
-    void mainWindow.loadFile(path.join(__dirname, '../dist/apex-suite/browser/index.html'));
+    void mainWindow.loadFile(path.join(__dirname, '../../dist/apex-suite/browser/index.html'));
   }
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -65,3 +66,5 @@ ipcMain.on('window:maximize', () => {
   }
 });
 ipcMain.on('window:close', () => mainWindow?.close());
+
+ipcMain.handle('system:getSnapshot', async () => collectSystemSnapshot());

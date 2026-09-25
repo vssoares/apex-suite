@@ -13,4 +13,8 @@ export class GameBoosterHeader {
   readonly description = input(
     'Monitoramento de hardware de baixa latência, desbloqueio de threads prioritárias e isolamento de processos em nível de kernel.',
   );
+  readonly cpuSpeed = input('—');
+  readonly cpuUsage = input('—');
+  readonly processesIdle = input('—');
+  readonly processesTotal = input('—');
 }

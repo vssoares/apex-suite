@@ -1,74 +1,69 @@
 <div class="page">
-  <app-gb-page-header />
+  <app-gb-page-header
+    [cpuSpeed]="cpuSpeed()"
+    [cpuUsage]="cpuUsage()"
+    [processesIdle]="processesIdle()"
+    [processesTotal]="processesTotal()"
+  />
   <app-boost-banner />
 
   <div class="telemetry-grid">
     <app-telemetry-card
       kind="cpu"
       title="CPU Core"
-      device="AMD RYZEN 7 7800X3D"
-      badge="V-Cache Ativo"
+      [device]="cpuDevice()"
+      [badge]="cpuBadge()"
       icon="memory"
       iconColor="primary"
-      primaryValue="4.85"
+      [primaryValue]="cpuSpeed()"
       primaryUnit="GHz"
-      secondary="34% Uso"
+      [secondary]="cpuSecondary()"
       [sparkline]
       footerLabel="Temperatura"
-      footerValue="58°C"
+      [footerValue]="cpuTemp()"
     />
 
     <app-telemetry-card
       kind="gpu"
       title="GPU Core"
-      device="NVIDIA GEFORCE RTX 4080"
-      badge="DLSS 3.5"
+      [device]="gpuDevice()"
+      badge="Driver Live"
       icon="developer_board"
       iconColor="emerald"
-      primaryValue="18%"
+      [primaryValue]="gpuUsage()"
       primaryUnit="Carga"
-      secondary="VRAM: 4.2/16 GB"
-      [bars]="[
-        { label: 'Utilização', value: 18, tone: 'emerald' },
-        { label: 'Ventoinhas', value: 42, tone: 'sky' }
-      ]"
-      footerLabel="Hotspot / Core"
-      footerValue="49°C / 54°C"
+      [secondary]="gpuVram()"
+      [bars]="gpuBars()"
+      footerLabel="Temperatura"
+      [footerValue]="gpuFooter()"
     />
 
     <app-telemetry-card
       kind="ram"
       title="Memória RAM"
-      device="32 GB DDR5 6000MHz"
-      badge="XMP 3.0"
+      [device]="ramDevice()"
+      badge="Live"
       icon="memory_alt"
       iconColor="purple"
-      primaryValue="9.8"
-      primaryUnit="/ 32 GB"
-      secondary="30.6%"
-      [segments]="[
-        { width: 30, tone: '#0ea5e9' },
-        { width: 14, tone: 'color-mix(in srgb, #a78bfa 80%, transparent)' },
-        { width: 56, tone: 'var(--surface-highest)' }
-      ]"
-      [legend]="['Jogos 6.4G', 'Cache 3.4G', 'Livre 22.2G']"
+      [primaryValue]="ramUsed()"
+      [primaryUnit]="ramTotal()"
+      [secondary]="ramPercent()"
+      [segments]="ramSegments()"
+      [legend]="ramLegend()"
       actionLabel="Limpar Cache de RAM"
       actionIcon="cleaning_services"
     />
 
     <app-telemetry-card
       kind="storage"
-      title="NVMe Gen4 SSD"
-      device="SAMSUNG 990 PRO 2TB"
-      badge="DirectStorage"
+      [title]="storageTitle()"
+      [device]="storageDevice()"
+      [badge]="storageBadge()"
       icon="hard_drive"
       iconColor="sky"
-      [stats]="[
-        { label: 'LEITURA', value: '7.450 MB/s' },
-        { label: 'ESCRITA', value: '6.900 MB/s' }
-      ]"
-      footerLabel="Saúde SMART: 100% OK"
-      footerValue="41°C"
+      [stats]="storageStats()"
+      [footerLabel]="storageHealth()"
+      [footerValue]="storageTemp()"
     />
   </div>
 

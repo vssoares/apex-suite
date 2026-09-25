@@ -24,20 +24,22 @@
   <div class="footer">
     <div class="row">
       <span class="muted">Driver Core</span>
-      <span class="mono">v552.22</span>
+      <span class="mono">{{ formatDriver(snapshot().gpu?.driverVersion) }}</span>
     </div>
     <div class="temp">
       <div class="temp-left">
         <app-icon name="thermostat" [size]="15" color="muted" />
         <span class="muted">GPU Temp</span>
       </div>
-      <span class="mono success">54°C</span>
+      <span class="mono" [class.success]="snapshot().gpu?.temperatureC != null">
+        {{ formatTemp(snapshot().gpu?.temperatureC) }}
+      </span>
     </div>
     <div class="row">
-      <span class="muted">Perfil Ativo</span>
+      <span class="muted">Sistema</span>
       <span class="profile">
         <app-status-dot tone="success" />
-        Ultra
+        {{ snapshot().os.arch }}
       </span>
     </div>
   </div>

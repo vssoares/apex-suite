@@ -2,7 +2,7 @@
   "name": "apex-suite",
   "version": "0.1.0",
   "description": "Apex Suite — desktop gaming utility (layout)",
-  "main": "dist-electron/main.js",
+  "main": "dist-electron/electron/main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4444",
@@ -41,6 +41,7 @@
     "@ng-icons/core": "^36.1.0",
     "@ng-icons/material-icons": "^36.1.0",
     "rxjs": "~7.8.0",
+    "systeminformation": "^5.33.13",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
