@@ -1,69 +1,28 @@
 <aside
-  class="fixed left-0 top-0 z-50 flex h-full w-64 flex-col justify-between border-r border-outline-variant bg-surface-container-low"
+  class="fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-outline-variant bg-surface-container-low"
 >
-  <div class="flex flex-col">
-    <div
-      class="flex h-12 items-center gap-2.5 border-b border-outline-variant bg-surface px-4"
-      style="-webkit-app-region: drag"
-    >
-      <div
-        class="grid h-7 w-7 place-items-center rounded-lg border border-primary/20 bg-primary/10 text-sm font-semibold text-primary"
-        style="-webkit-app-region: no-drag"
-      >
-        A
-      </div>
-      <span class="text-sm font-semibold tracking-wide text-on-surface">Apex Suite</span>
-    </div>
-
-    <div class="px-4 pb-2 pt-4">
-      <span class="text-[11px] font-medium uppercase tracking-wider text-on-surface-variant">
-        Menu Principal
-      </span>
-    </div>
-
-    <nav class="flex flex-col gap-1 px-3">
-      @for (item of navItems; track item.path) {
-        <a
-          [routerLink]="item.path"
-          routerLinkActive="bg-surface-container-high text-on-surface font-medium border border-outline/30"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="flex items-center gap-3 rounded-lg px-3 py-2 text-xs text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
-        >
-          <app-icon [name]="item.icon" [size]="18" />
-          <span>{{ item.label }}</span>
-        </a>
-      }
-    </nav>
+  <div class="flex h-12 items-center gap-2.5 border-b border-outline-variant bg-surface px-4">
+    <img src="logo.png" alt="Apex Suite" class="h-7 w-7 object-contain" />
+    <span class="text-sm font-semibold tracking-wide text-on-surface">Apex Suite</span>
   </div>
 
-  <div class="flex flex-col gap-2.5 border-t border-outline-variant bg-surface p-3.5">
-    <div class="flex items-center justify-between text-xs">
-      <span class="text-on-surface-variant">Driver Core</span>
-      <span class="font-mono font-medium text-on-surface">{{
-        formatDriver(snapshot().gpu?.driverVersion)
-      }}</span>
-    </div>
-    <div
-      class="flex items-center justify-between rounded border border-outline-variant/60 bg-surface-container-low px-2.5 py-1.5"
-    >
-      <div class="flex items-center gap-1.5">
-        <app-icon name="thermostat" [size]="15" color="muted" />
-        <span class="text-xs text-on-surface-variant">GPU Temp</span>
-      </div>
-      <span
-        class="font-mono text-xs font-medium"
-        [class.text-emerald]="snapshot().gpu?.temperatureC != null"
-        [class.text-on-surface]="snapshot().gpu?.temperatureC == null"
-      >
-        {{ formatTemp(snapshot().gpu?.temperatureC) }}
-      </span>
-    </div>
-    <div class="flex items-center justify-between pt-0.5">
-      <span class="text-xs text-on-surface-variant">Sistema</span>
-      <span class="inline-flex items-center gap-1.5 text-xs font-medium text-on-surface">
-        <app-status-dot tone="success" />
-        {{ snapshot().os.arch }}
-      </span>
-    </div>
+  <div class="px-4 pb-2 pt-4">
+    <span class="text-[11px] font-medium uppercase tracking-wider text-on-surface-variant">
+      Menu Principal
+    </span>
   </div>
+
+  <nav class="flex flex-col gap-1 px-3">
+    @for (item of navItems; track item.path) {
+      <a
+        [routerLink]="item.path"
+        routerLinkActive="bg-surface-container-high text-on-surface font-medium border border-outline/30"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex items-center gap-3 rounded-lg px-3 py-2 text-xs text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
+      >
+        <app-icon [name]="item.icon" [size]="18" />
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
 </aside>

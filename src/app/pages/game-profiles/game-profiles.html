@@ -1,0 +1,90 @@
+<div class="page">
+  <header class="header">
+    <div>
+      <p class="eyebrow">Perfis</p>
+      <h1>Cores por Jogo</h1>
+      <p class="sub">
+        Quando o jogo estiver rodando, o perfil dele sobrescreve as cores gerais do Display &amp;
+        Cores.
+      </p>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <span class="label">Overrides</span>
+        <span class="value mono">{{ enabledCount() }}</span>
+      </div>
+      <div class="stat">
+        <span class="label">Rodando</span>
+        <span class="value mono">{{ runningCount() }}</span>
+      </div>
+    </div>
+  </header>
+
+  @if (overrideActive() && activeGameTitle(); as title) {
+    <div class="banner">
+      <app-status-dot tone="success" />
+      <span>Override ativo agora: <strong>{{ title }}</strong></span>
+    </div>
+  }
+
+  @if (status()) {
+    <p class="status mono">{{ status() }}</p>
+  }
+
+  @if (loading()) {
+    <app-panel>
+      <p class="muted">Carregando jogos…</p>
+    </app-panel>
+  } @else {
+    <div class="grid">
+      @for (game of games(); track game.id) {
+        <app-panel [active]="game.running && !!game.override?.enabled">
+          <div class="card">
+            <div class="card-top">
+              <div class="identity">
+                @if (game.imageUrl) {
+                  <img [src]="game.imageUrl" [alt]="game.title" />
+                } @else {
+                  <div class="placeholder">
+                    <app-icon name="sports_esports" [size]="22" color="muted" />
+                  </div>
+                }
+                <div>
+                  <div class="title-row">
+                    <h3>{{ game.title }}</h3>
+                    @if (game.running) {
+                      <app-badge tone="success">Rodando</app-badge>
+                    }
+                    @if (game.override?.enabled) {
+                      <app-badge tone="primary">Override</app-badge>
+                    }
+                  </div>
+                  <p class="tag">{{ game.tag }}</p>
+                  <p class="exe mono">{{ game.processNames[0] }}</p>
+                </div>
+              </div>
+              <app-toggle
+                [checked]="!!game.override?.enabled"
+                (checkedChange)="onToggle(game, $event)"
+              />
+            </div>
+
+            <div class="preset-row">
+              <label>
+                <span>Preset de cor</span>
+                <select
+                  [value]="game.override?.presetId || game.defaultPresetId"
+                  (change)="onPresetChange(game, $event)"
+                >
+                  @for (preset of presets(); track preset.id) {
+                    <option [value]="preset.id">{{ preset.code }} — {{ preset.title }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+          </div>
+        </app-panel>
+      }
+    </div>
+  }
+</div>

@@ -13,6 +13,9 @@ export class ActionFooter {
   readonly profileLabel = input('Perfil ativo');
   readonly status = input('Pronto');
   readonly applying = input(false, { transform: booleanAttribute });
+  readonly canUpdateProfile = input(false, { transform: booleanAttribute });
   readonly resetWindows = output<void>();
   readonly applyProfile = output<void>();
+  readonly saveAsProfile = output<void>();
+  readonly updateProfile = output<void>();
 }

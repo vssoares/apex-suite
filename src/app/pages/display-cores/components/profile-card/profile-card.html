@@ -4,11 +4,23 @@
       <div class="icon" [class.active]="active()">
         <app-icon [name]="icon()" [size]="18" [color]="active() ? 'sky' : 'muted'" />
       </div>
-      @if (active()) {
-        <app-badge tone="primary">Ativo</app-badge>
-      } @else {
-        <span class="code mono">{{ code() }}</span>
-      }
+      <div class="head-right">
+        @if (active()) {
+          <app-badge tone="primary">Ativo</app-badge>
+        } @else {
+          <span class="code mono">{{ code() }}</span>
+        }
+        @if (!builtin()) {
+          <div class="actions">
+            <button type="button" title="Atualizar com ajustes atuais" (click)="onEdit($event)">
+              <app-icon name="edit" [size]="14" color="muted" />
+            </button>
+            <button type="button" title="Excluir perfil" (click)="onRemove($event)">
+              <app-icon name="delete" [size]="14" color="muted" />
+            </button>
+          </div>
+        }
+      </div>
     </div>
     <h4>{{ title() }}</h4>
     <p>{{ description() }}</p>

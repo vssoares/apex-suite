@@ -1,9 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { SystemInfo } from '../../core/system-info';
-import { formatDriver, formatTemp } from '../../core/system-format';
 import { Icon } from '../../shared/ui/icon/icon';
-import { StatusDot } from '../../shared/ui/status-dot/status-dot';
 
 interface NavItem {
   path: string;
@@ -13,7 +10,7 @@ interface NavItem {
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive, Icon, StatusDot],
+  imports: [RouterLink, RouterLinkActive, Icon],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
   host: {
@@ -21,12 +18,6 @@ interface NavItem {
   },
 })
 export class Sidebar {
-  private readonly systemInfo = inject(SystemInfo);
-
-  readonly snapshot = this.systemInfo.snapshot;
-  readonly formatTemp = formatTemp;
-  readonly formatDriver = formatDriver;
-
   readonly navItems: NavItem[] = [
     { path: '/game-booster', label: 'Game Booster', icon: 'rocket_launch' },
     { path: '/display-cores', label: 'Display & Cores', icon: 'monitor' },

@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { DisplayColor } from '../../core/display-color';
 import { DisplayCoresHeader } from './components/page-header/page-header';
 import { DisplaySwitcher } from './components/display-switcher/display-switcher';
@@ -8,6 +8,7 @@ import { TuningSliderPanel } from './components/tuning-slider/tuning-slider';
 import { GammaPanel } from './components/gamma-panel/gamma-panel';
 import { PreviewPanel } from './components/preview-panel/preview-panel';
 import { ActionFooter } from './components/action-footer/action-footer';
+import { Button } from '../../shared/ui/button/button';
 
 @Component({
   selector: 'app-display-cores-page',
@@ -20,6 +21,7 @@ import { ActionFooter } from './components/action-footer/action-footer';
     GammaPanel,
     PreviewPanel,
     ActionFooter,
+    Button,
   ],
   templateUrl: './display-cores.html',
   styleUrl: './display-cores.scss',
@@ -32,6 +34,12 @@ export class DisplayCoresPage {
   readonly status = this.displayColor.status;
   readonly applying = this.displayColor.applying;
   readonly activeProfileLabel = this.displayColor.activeProfileLabel;
+  readonly overrideActive = this.displayColor.overrideActive;
+  readonly activeGameTitle = this.displayColor.activeGameTitle;
+  readonly canUpdateProfile = computed(() => !this.displayColor.isActiveProfileBuiltin());
+  readonly showCreateForm = signal(false);
+  readonly newProfileTitle = signal('');
+  readonly newProfileDescription = signal('');
 
   readonly displays = computed(() =>
     this.displayColor.displays().map((d) => ({
@@ -90,7 +98,7 @@ export class DisplayCoresPage {
   }
 
   protected onSelectPreset(id: string): void {
-    const preset = this.presets.find((p) => p.id === id);
+    const preset = this.presets().find((p) => p.id === id);
     if (preset) this.displayColor.applyPreset(preset);
   }
 
@@ -100,5 +108,47 @@ export class DisplayCoresPage {
 
   protected onApply(): void {
     void this.displayColor.applyNow();
+  }
+
+  protected onSaveAsProfile(): void {
+    this.showCreateForm.set(true);
+    this.newProfileTitle.set('');
+    this.newProfileDescription.set('');
+  }
+
+  protected onConfirmCreate(): void {
+    const title = this.newProfileTitle().trim();
+    if (!title) return;
+    void this.displayColor.saveAsProfile(title, this.newProfileDescription().trim() || undefined);
+    this.showCreateForm.set(false);
+  }
+
+  protected onCancelCreate(): void {
+    this.showCreateForm.set(false);
+  }
+
+  protected onUpdateProfile(): void {
+    void this.displayColor.updateActiveProfile();
+  }
+
+  protected onDeleteProfile(id: string): void {
+    if (!confirm('Excluir este perfil salvo no computador?')) return;
+    void this.displayColor.deleteProfile(id);
+  }
+
+  protected onEditProfile(id: string): void {
+    this.onSelectPreset(id);
+  }
+
+  protected onImport(): void {
+    void this.displayColor.importProfiles();
+  }
+
+  protected onExport(): void {
+    void this.displayColor.exportProfiles();
+  }
+
+  protected isBuiltin(id: string): boolean {
+    return this.displayColor.isProfileBuiltin(id);
   }
 }

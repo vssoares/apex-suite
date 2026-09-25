@@ -1,6 +1,12 @@
 <div class="page">
   <app-dc-page-header />
 
+  @if (overrideActive() && activeGameTitle(); as title) {
+    <div class="override-banner mono">
+      Override de jogo ativo: {{ title }} — ajustes nesta página salvam as cores gerais.
+    </div>
+  }
+
   <div class="top-row">
     <div class="displays">
       <app-display-switcher
@@ -15,11 +21,36 @@
 
   <section class="profiles">
     <div class="profiles-head">
-      <span>Predefinições Rápidas de Perfil</span>
-      <span class="mono">{{ status() }}</span>
+      <span>Perfis de Cor</span>
+      <div class="profile-tools">
+        <app-button variant="ghost" icon="upload_file" (click)="onImport()">Importar</app-button>
+        <app-button variant="ghost" icon="download" (click)="onExport()">Exportar</app-button>
+        <app-button variant="secondary" icon="add" (click)="onSaveAsProfile()">Novo</app-button>
+        <span class="mono">{{ status() }}</span>
+      </div>
     </div>
+
+    @if (showCreateForm()) {
+      <div class="create-form">
+        <input
+          type="text"
+          placeholder="Nome do perfil"
+          [value]="newProfileTitle()"
+          (input)="newProfileTitle.set($any($event.target).value)"
+        />
+        <input
+          type="text"
+          placeholder="Descrição (opcional)"
+          [value]="newProfileDescription()"
+          (input)="newProfileDescription.set($any($event.target).value)"
+        />
+        <app-button variant="primary" icon="save" (click)="onConfirmCreate()">Salvar</app-button>
+        <app-button variant="ghost" (click)="onCancelCreate()">Cancelar</app-button>
+      </div>
+    }
+
     <div class="profiles-grid">
-      @for (preset of presets; track preset.id) {
+      @for (preset of presets(); track preset.id) {
         <app-profile-card
           [title]="preset.title"
           [description]="preset.description"
@@ -31,7 +62,10 @@
           [rightValue]="preset.rightValue"
           [rightTone]="preset.rightTone ?? 'default'"
           [active]="activeProfileId() === preset.id"
+          [builtin]="isBuiltin(preset.id)"
           (select)="onSelectPreset(preset.id)"
+          (edit)="onEditProfile(preset.id)"
+          (remove)="onDeleteProfile(preset.id)"
         />
       }
     </div>
@@ -51,7 +85,10 @@
     [profileLabel]="activeProfileLabel()"
     [status]="status()"
     [applying]="applying()"
+    [canUpdateProfile]="canUpdateProfile()"
     (resetWindows)="onResetWindows()"
     (applyProfile)="onApply()"
+    (saveAsProfile)="onSaveAsProfile()"
+    (updateProfile)="onUpdateProfile()"
   />
 </div>

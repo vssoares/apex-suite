@@ -1,7 +1,18 @@
 <app-sidebar />
 <div class="ml-64 flex h-full flex-col">
-  <app-titlebar />
-  <main class="app-scroll relative mt-12 h-[calc(100%-3rem)] w-full bg-surface-container-lowest px-6">
+  @if (update.status() === 'available' && update.pendingVersion(); as version) {
+    <div class="update-bar">
+      <span>Nova versão disponível: v{{ version }}</span>
+      <button type="button" (click)="installUpdate()">Atualizar</button>
+    </div>
+  } @else if (update.status() === 'downloading') {
+    <div class="update-bar muted">
+      <app-status-dot tone="warning" />
+      <span class="mono">Baixando atualização {{ update.progress() }}%</span>
+    </div>
+  }
+
+  <main class="app-scroll relative h-full w-full bg-surface-container-lowest px-6">
     <router-outlet />
   </main>
 </div>

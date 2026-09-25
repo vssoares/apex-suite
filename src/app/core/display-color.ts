@@ -21,6 +21,12 @@ export class DisplayColor {
   private readonly statusSignal = signal('Aguardando ajuste…');
   private readonly applyingSignal = signal(false);
   private readonly availableSignal = signal(false);
+  private readonly activeGameIdSignal = signal<string | null>(null);
+  private readonly activeGameTitleSignal = signal<string | null>(null);
+  private readonly overrideActiveSignal = signal(false);
+
+  private readonly presetsSignal = signal<ColorProfilePreset[]>([...COLOR_PROFILE_PRESETS]);
+  private readonly profileMetaSignal = signal<Record<string, { builtin: boolean }>>({});
 
   readonly settings = this.settingsSignal.asReadonly();
   readonly displays = this.displaysSignal.asReadonly();
@@ -28,7 +34,10 @@ export class DisplayColor {
   readonly status = this.statusSignal.asReadonly();
   readonly applying = this.applyingSignal.asReadonly();
   readonly available = this.availableSignal.asReadonly();
-  readonly presets = COLOR_PROFILE_PRESETS;
+  readonly activeGameId = this.activeGameIdSignal.asReadonly();
+  readonly activeGameTitle = this.activeGameTitleSignal.asReadonly();
+  readonly overrideActive = this.overrideActiveSignal.asReadonly();
+  readonly presets = this.presetsSignal.asReadonly();
 
   readonly selectedDisplay = computed(() => {
     const list = this.displays();
@@ -38,10 +47,18 @@ export class DisplayColor {
 
   readonly activePreset = computed(() => {
     const id = this.settings().profileId;
-    return this.presets.find((p) => p.id === id) ?? null;
+    return this.presetsSignal().find((p) => p.id === id) ?? null;
+  });
+
+  readonly isActiveProfileBuiltin = computed(() => {
+    const id = this.settings().profileId;
+    return this.profileMetaSignal()[id]?.builtin ?? true;
   });
 
   readonly activeProfileLabel = computed(() => {
+    if (this.overrideActive() && this.activeGameTitle()) {
+      return `Override ativo: ${this.activeGameTitle()}`;
+    }
     const preset = this.activePreset();
     const display = this.selectedDisplay();
     const name = preset?.title ?? 'Personalizado';
@@ -49,27 +66,91 @@ export class DisplayColor {
     return `Perfil: ${name} (${displayName})`;
   });
 
-  private externalProfileOff: (() => void) | null = null;
+  private offProfile: (() => void) | null = null;
+  private offGame: (() => void) | null = null;
 
   constructor() {
-    void this.loadDisplays();
-    this.listenExternalProfileApply();
+    void this.bootstrap();
     this.destroyRef.onDestroy(() => {
       if (this.applyTimer) {
         clearTimeout(this.applyTimer);
         this.applyTimer = null;
       }
-      this.externalProfileOff?.();
+      this.offProfile?.();
+      this.offGame?.();
     });
   }
 
-  private listenExternalProfileApply(): void {
+  private async bootstrap(): Promise<void> {
+    this.listenExternalEvents();
+    await Promise.all([this.loadDisplays(), this.reloadProfiles()]);
+    await this.syncActiveState();
+  }
+
+  async reloadProfiles(): Promise<void> {
     const api = window.electronAPI;
-    if (!api?.onProfileApply) return;
-    this.externalProfileOff = api.onProfileApply((payload) => {
-      this.settingsSignal.set({ ...payload.settings });
-      this.statusSignal.set(payload.message);
-    });
+    if (!api?.listColorProfiles) {
+      this.presetsSignal.set([...COLOR_PROFILE_PRESETS]);
+      const meta: Record<string, { builtin: boolean }> = {};
+      for (const p of COLOR_PROFILE_PRESETS) meta[p.id] = { builtin: true };
+      this.profileMetaSignal.set(meta);
+      return;
+    }
+
+    try {
+      const list = await api.listColorProfiles();
+      this.presetsSignal.set(
+        list.map(({ builtin: _b, updatedAt: _u, ...profile }) => profile),
+      );
+      const meta: Record<string, { builtin: boolean }> = {};
+      for (const p of list) meta[p.id] = { builtin: p.builtin };
+      this.profileMetaSignal.set(meta);
+    } catch {
+      this.presetsSignal.set([...COLOR_PROFILE_PRESETS]);
+    }
+  }
+
+  private listenExternalEvents(): void {
+    const api = window.electronAPI;
+    if (!api) return;
+
+    if (api.onProfileApply) {
+      this.offProfile = api.onProfileApply((payload) => {
+        // Só sincroniza settings editáveis quando não há override de jogo
+        if (!this.overrideActiveSignal()) {
+          this.settingsSignal.set({ ...payload.settings });
+        }
+        this.statusSignal.set(payload.message);
+      });
+    }
+
+    if (api.onGameColorActive) {
+      this.offGame = api.onGameColorActive((payload) => {
+        this.activeGameIdSignal.set(payload.gameId);
+        this.activeGameTitleSignal.set(payload.title);
+        this.overrideActiveSignal.set(payload.source === 'game');
+        this.statusSignal.set(payload.message);
+        if (payload.source === 'global') {
+          this.settingsSignal.set({ ...payload.settings });
+        }
+      });
+    }
+  }
+
+  private async syncActiveState(): Promise<void> {
+    const api = window.electronAPI;
+    if (!api?.getActiveGameColor) return;
+    try {
+      const active = await api.getActiveGameColor();
+      this.activeGameIdSignal.set(active.gameId);
+      this.activeGameTitleSignal.set(active.title);
+      this.overrideActiveSignal.set(active.overrideActive);
+      if (active.source === 'global') {
+        this.settingsSignal.set({ ...active.settings });
+      }
+    } catch {
+      // ignore
+    }
   }
 
   async loadDisplays(): Promise<void> {
@@ -121,7 +202,7 @@ export class DisplayColor {
         [field]: value,
         profileId: 'custom',
       };
-      const matched = this.presets.find((preset) => this.matchesPreset(next, preset));
+      const matched = this.presetsSignal().find((preset) => this.matchesPreset(next, preset));
       if (matched) next.profileId = matched.id;
       return next;
     });
@@ -156,6 +237,9 @@ export class DisplayColor {
       const result = await api.resetDisplayColor(this.selectedDisplayIdSignal());
       this.settingsSignal.set({ ...result.settings });
       this.statusSignal.set(result.message);
+      this.overrideActiveSignal.set(false);
+      this.activeGameIdSignal.set(null);
+      this.activeGameTitleSignal.set(null);
     } catch {
       this.statusSignal.set('Erro ao restaurar via SetDeviceGammaRamp.');
     } finally {
@@ -191,6 +275,94 @@ export class DisplayColor {
       this.applyTimer = null;
       void this.flushApply();
     }, APPLY_DEBOUNCE_MS);
+  }
+
+  async saveAsProfile(title: string, description?: string): Promise<void> {
+    const api = window.electronAPI;
+    if (!api?.createColorProfile) {
+      this.statusSignal.set('Salvar perfil só funciona no Electron.');
+      return;
+    }
+
+    try {
+      const created = await api.createColorProfile({
+        title,
+        description,
+        settings: this.settingsSignal(),
+      });
+      await this.reloadProfiles();
+      this.settingsSignal.update((s) => ({ ...s, profileId: created.id }));
+      void api.recordRecentProfile?.(created.id);
+      this.statusSignal.set(`Perfil "${created.title}" salvo no computador.`);
+      await this.flushApply();
+    } catch (err) {
+      this.statusSignal.set((err as Error)?.message || 'Falha ao salvar perfil.');
+    }
+  }
+
+  async updateActiveProfile(): Promise<void> {
+    const api = window.electronAPI;
+    const id = this.settings().profileId;
+    if (!api?.updateColorProfile || this.isActiveProfileBuiltin()) {
+      this.statusSignal.set('Selecione um perfil personalizado para atualizar.');
+      return;
+    }
+
+    try {
+      await api.updateColorProfile({ id, settings: this.settingsSignal() });
+      await this.reloadProfiles();
+      this.statusSignal.set('Perfil atualizado no computador.');
+      await this.flushApply();
+    } catch (err) {
+      this.statusSignal.set((err as Error)?.message || 'Falha ao atualizar perfil.');
+    }
+  }
+
+  async deleteProfile(id: string): Promise<void> {
+    const api = window.electronAPI;
+    if (!api?.deleteColorProfile) return;
+    if (this.profileMetaSignal()[id]?.builtin) {
+      this.statusSignal.set('Perfis embutidos não podem ser excluídos.');
+      return;
+    }
+
+    try {
+      await api.deleteColorProfile(id);
+      await this.reloadProfiles();
+      if (this.settings().profileId === id) {
+        this.settingsSignal.update((s) => ({ ...s, profileId: 'custom' }));
+      }
+      this.statusSignal.set('Perfil excluído.');
+    } catch (err) {
+      this.statusSignal.set((err as Error)?.message || 'Falha ao excluir perfil.');
+    }
+  }
+
+  async exportProfiles(): Promise<void> {
+    const api = window.electronAPI;
+    if (!api?.exportColorProfiles) return;
+    try {
+      const result = await api.exportColorProfiles();
+      this.statusSignal.set(result.message);
+    } catch {
+      this.statusSignal.set('Falha ao exportar perfis.');
+    }
+  }
+
+  async importProfiles(): Promise<void> {
+    const api = window.electronAPI;
+    if (!api?.importColorProfiles) return;
+    try {
+      const result = await api.importColorProfiles();
+      await this.reloadProfiles();
+      this.statusSignal.set(result.message);
+    } catch {
+      this.statusSignal.set('Falha ao importar perfis.');
+    }
+  }
+
+  isProfileBuiltin(id: string): boolean {
+    return this.profileMetaSignal()[id]?.builtin ?? true;
   }
 
   private async flushApply(): Promise<void> {

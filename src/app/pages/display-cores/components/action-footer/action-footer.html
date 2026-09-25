@@ -16,6 +16,14 @@
     <app-button variant="danger" icon="device_reset" (click)="resetWindows.emit()">
       Restaurar Padrões Windows
     </app-button>
+    <app-button variant="secondary" icon="add" (click)="saveAsProfile.emit()">
+      Salvar como perfil
+    </app-button>
+    @if (canUpdateProfile()) {
+      <app-button variant="secondary" icon="edit" (click)="updateProfile.emit()">
+        Atualizar perfil
+      </app-button>
+    }
     <app-button variant="primary" icon="check_circle" (click)="applyProfile.emit()">
       Aplicar no Display
     </app-button>
