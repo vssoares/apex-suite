@@ -9,12 +9,32 @@
       <app-status-dot tone="success" />
       <span class="font-medium text-on-surface">Boost: Ativo</span>
     </div>
-    <div
-      class="flex items-center gap-1.5 rounded border border-outline-variant bg-surface-container/60 px-2 py-1 text-xs text-on-surface-variant"
-    >
-      <span>Overlay FPS</span>
-      <span class="font-mono font-medium text-primary">ON</span>
-    </div>
+
+    @if (update.status() === 'available' && update.pendingVersion(); as version) {
+      <button
+        type="button"
+        class="flex items-center gap-1.5 rounded border border-primary/40 bg-primary/10 px-2.5 py-1 text-xs text-primary transition-colors hover:bg-primary/20"
+        (click)="installUpdate()"
+      >
+        <app-icon name="system_update_alt" [size]="14" color="primary" />
+        <span>Atualizar para v{{ version }}</span>
+      </button>
+    } @else if (update.status() === 'downloading') {
+      <div
+        class="flex items-center gap-1.5 rounded border border-outline-variant bg-surface-container px-2.5 py-1 text-xs text-on-surface-variant"
+      >
+        <app-status-dot tone="warning" />
+        <span class="font-mono">Baixando {{ update.progress() }}%</span>
+      </div>
+    } @else if (update.status() === 'error') {
+      <button
+        type="button"
+        class="flex items-center gap-1.5 rounded border border-error/40 bg-error/10 px-2.5 py-1 text-xs text-error"
+        (click)="update.dismiss()"
+      >
+        <span>{{ update.error() || 'Erro na atualização' }}</span>
+      </button>
+    }
   </div>
 
   <div class="flex items-center gap-2" style="-webkit-app-region: no-drag">

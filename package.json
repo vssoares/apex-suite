@@ -1,7 +1,10 @@
 {
   "name": "apex-suite",
   "version": "0.1.0",
-  "description": "Apex Suite — desktop gaming utility (layout)",
+  "description": "Apex Suite — desktop gaming utility",
+  "author": "vssoares",
+  "private": true,
+  "packageManager": "npm@10.9.8",
   "main": "dist-electron/electron/main.js",
   "scripts": {
     "ng": "ng",
@@ -10,25 +13,65 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:electron": "tsc -p electron/tsconfig.json",
+    "build:app": "ng build --configuration production && npm run build:electron",
     "electron:dev": "npm run build:electron && concurrently \"ng serve --port 4444\" \"wait-on http://localhost:4444 && electron .\"",
-    "electron:build": "ng build --configuration production && npm run build:electron && electron-builder"
+    "electron:build": "npm run dist:win",
+    "dist": "npm run build:app && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder",
+    "dist:win": "npm run build:app && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win",
+    "dist:win:publish": "npm run build:app && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win --publish always"
   },
-  "private": true,
-  "packageManager": "npm@10.9.8",
   "build": {
     "appId": "com.apexsuite.app",
     "productName": "Apex Suite",
-    "directories": {
-      "output": "release"
-    },
     "files": [
       "dist/apex-suite/browser/**/*",
-      "dist-electron/**/*"
+      "dist-electron/**/*",
+      "package.json"
     ],
+    "asarUnpack": [
+      "**/node_modules/koffi/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      },
+      {
+        "from": "build/icon.ico",
+        "to": "icon.ico"
+      }
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "artifactName": "ApexSuite-Setup-${version}.${ext}",
     "win": {
+      "icon": "build/icon.ico",
       "target": [
-        "nsis"
-      ]
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "vssoares",
+      "repo": "apex-suite",
+      "releaseType": "release"
     }
   },
   "dependencies": {
@@ -40,6 +83,7 @@
     "@angular/router": "^22.0.0",
     "@ng-icons/core": "^36.1.0",
     "@ng-icons/material-icons": "^36.1.0",
+    "electron-updater": "^6.8.9",
     "koffi": "^3.3.1",
     "rxjs": "~7.8.0",
     "systeminformation": "^5.33.13",

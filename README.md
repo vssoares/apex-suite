@@ -1,44 +1,31 @@
 # Apex Suite
 
-App Electron + Angular 22 (TypeScript) baseado nos protótipos em `prototype/`.  
-Por enquanto apenas o **layout** (sem lógica de funcionalidades).
+Desktop gaming utility (Electron + Angular).
 
-## Requisitos
-
-- Node.js 22+
-
-## Scripts
+## Desenvolvimento
 
 ```bash
-# UI no browser (http://localhost:4444)
-npm start
-
-# App Electron (dev) — Angular na porta 4444
+npm install
 npm run electron:dev
-
-# Build Angular
-npm run build
-
-# Compilar processo Electron
-npm run build:electron
 ```
 
-## Ícones
+## Build local (instalador Windows)
 
-Todos os Material Icons (outline) são registrados uma vez em `app.config.ts` via `@ng-icons`.  
-O wrapper `<app-icon name="rocket_launch" />` continua sendo a API usada nos templates.
+```bash
+npm run dist:win
+```
 
-## Estilos
+O instalador NSIS sai em `release/ApexSuite-Setup-<versão>.exe`.
 
-- Tailwind CSS v4 (`src/styles.css` + `.postcssrc.json`)
-- Tema Apex em `@theme` (cores do protótipo: `surface`, `primary`, `outline-variant`…)
-- Bridge `:root` mantém `var(--surface)` etc. para SCSS dos componentes
+## Release no GitHub Actions
 
-Exemplos: `bg-surface`, `text-on-surface-variant`, `border-outline-variant`, `text-primary`
+1. Atualize a versão em `package.json` (ex.: `0.1.1`)
+2. Commit e push para `main`
+3. Crie e envie a tag correspondente:
 
-## Rotas
+```bash
+git tag v0.1.1
+git push origin v0.1.1
+```
 
-- `#/game-booster`
-- `#/display-cores`
-- `#/perfis-de-jogos` (placeholder)
-- `#/configuracoes` (placeholder)
+O workflow `.github/workflows/release.yml` sobe o `.exe`, `.blockmap` e `latest.yml` no GitHub Release. O app verifica updates via `electron-updater`.
