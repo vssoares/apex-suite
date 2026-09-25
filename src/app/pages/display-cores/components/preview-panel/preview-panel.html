@@ -8,7 +8,7 @@
   </div>
 
   <div class="viewport">
-    <img [src]="afterImage" alt="Preview calibrado" />
+    <img [src]="afterImage" alt="Preview calibrado" [style.filter]="tunedFilter()" />
     <div class="before">
       <img [src]="beforeImage" alt="Preview padrão" />
       <span class="label left mono">PADRÃO WINDOWS</span>
@@ -22,7 +22,7 @@
     <div class="watermark">
       <span>
         <app-status-dot tone="success" />
-        Black EQ Ativo
+        {{ watermarkLabel() }}
       </span>
       <span class="muted">Motor LUT em tempo real</span>
     </div>
@@ -58,7 +58,7 @@
     <div class="luma">
       <div>
         <span class="label-sm">Luminância Calculada</span>
-        <span class="mono value">245.8 cd/m²</span>
+        <span class="mono value">{{ luminanceLabel() }}</span>
       </div>
       <div class="right">
         <span class="label-sm">Latência Adicionada</span>

@@ -28,14 +28,13 @@ npm run build:electron
 Todos os Material Icons (outline) são registrados uma vez em `app.config.ts` via `@ng-icons`.  
 O wrapper `<app-icon name="rocket_launch" />` continua sendo a API usada nos templates.
 
-## Estrutura
+## Estilos
 
-- `electron/` — main + preload (TypeScript)
-- `src/app/layout/` — sidebar, titlebar, shell
-- `src/app/shared/ui/` — componentes reutilizáveis (badge, button, toggle, slider…)
-- `src/app/pages/game-booster/` — tela Game Booster
-- `src/app/pages/display-cores/` — tela Display & Cores
-- `src/styles/` — design tokens (Apex Precision)
+- Tailwind CSS v4 (`src/styles.css` + `.postcssrc.json`)
+- Tema Apex em `@theme` (cores do protótipo: `surface`, `primary`, `outline-variant`…)
+- Bridge `:root` mantém `var(--surface)` etc. para SCSS dos componentes
+
+Exemplos: `bg-surface`, `text-on-surface-variant`, `border-outline-variant`, `text-primary`
 
 ## Rotas
 

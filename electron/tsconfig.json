@@ -11,5 +11,5 @@
     "ignoreDeprecations": "6.0",
     "types": ["node"]
   },
-  "include": ["./**/*.ts", "../shared/system-info.model.ts"]
+  "include": ["./**/*.ts", "../shared/**/*.ts"]
 }

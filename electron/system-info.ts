@@ -21,7 +21,8 @@ function pickPrimaryGpu(
 }
 
 export async function collectSystemSnapshot(): Promise<SystemSnapshot> {
-  const [cpu, speed, load, temp, mem, memLayout, graphics, disks, fsSize, processes, osInfo] =
+  // Skip full process list — si.processes() is expensive and drives RAM/CPU in the poll loop.
+  const [cpu, speed, load, temp, mem, memLayout, graphics, disks, fsSize, osInfo] =
     await Promise.all([
       si.cpu(),
       si.cpuCurrentSpeed(),
@@ -32,7 +33,6 @@ export async function collectSystemSnapshot(): Promise<SystemSnapshot> {
       si.graphics(),
       si.diskLayout(),
       si.fsSize(),
-      si.processes(),
       si.osInfo(),
     ]);
 
@@ -120,9 +120,9 @@ export async function collectSystemSnapshot(): Promise<SystemSnapshot> {
         }
       : null,
     processes: {
-      total: processes.all || 0,
-      running: processes.running || 0,
-      sleeping: processes.sleeping || Math.max((processes.all || 0) - (processes.running || 0), 0),
+      total: 0,
+      running: 0,
+      sleeping: 0,
     },
     os: {
       distro: osInfo.distro || 'Windows',

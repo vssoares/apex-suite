@@ -40,6 +40,7 @@
     "@angular/router": "^22.0.0",
     "@ng-icons/core": "^36.1.0",
     "@ng-icons/material-icons": "^36.1.0",
+    "koffi": "^3.3.1",
     "rxjs": "~7.8.0",
     "systeminformation": "^5.33.13",
     "tslib": "^2.3.0"
@@ -48,12 +49,15 @@
     "@angular/build": "^22.0.7",
     "@angular/cli": "^22.0.7",
     "@angular/compiler-cli": "^22.0.0",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.6.2",
     "concurrently": "^10.0.5",
     "cross-env": "^10.1.0",
     "electron": "^44.4.5",
     "electron-builder": "^26.15.3",
+    "postcss": "^8.5.28",
     "prettier": "^3.8.1",
+    "tailwindcss": "^4.3.3",
     "typescript": "~6.0.2",
     "wait-on": "^9.1.0"
   }

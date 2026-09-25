@@ -4,7 +4,8 @@ import {
   type SystemSnapshot,
 } from './system-info.model';
 
-const POLL_MS = 2500;
+const POLL_MS = 5000;
+
 
 @Service()
 export class SystemInfo {

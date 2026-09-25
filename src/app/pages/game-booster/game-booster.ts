@@ -30,8 +30,14 @@ export class GameBoosterPage {
 
   readonly cpuSpeed = computed(() => formatGhz(this.snapshot().cpu.speedGhz));
   readonly cpuUsage = computed(() => String(Math.round(this.snapshot().cpu.usagePercent)));
-  readonly processesIdle = computed(() => String(this.snapshot().processes.sleeping));
-  readonly processesTotal = computed(() => String(this.snapshot().processes.total || '—'));
+  readonly processesIdle = computed(() => {
+    const n = this.snapshot().processes.sleeping;
+    return n > 0 ? String(n) : '—';
+  });
+  readonly processesTotal = computed(() => {
+    const n = this.snapshot().processes.total;
+    return n > 0 ? String(n) : '—';
+  });
 
   readonly cpuDevice = computed(() => this.snapshot().cpu.brand.toUpperCase());
   readonly cpuBadge = computed(

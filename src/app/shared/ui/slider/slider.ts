@@ -1,4 +1,12 @@
-import { booleanAttribute, Component, computed, input, model, numberAttribute } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  computed,
+  input,
+  model,
+  numberAttribute,
+  output,
+} from '@angular/core';
 import { Icon } from '../icon/icon';
 
 @Component({
@@ -19,7 +27,7 @@ import { Icon } from '../icon/icon';
         <div class="actions">
           <span class="value mono">{{ displayValue() }}</span>
           @if (showReset()) {
-            <button type="button" class="reset" title="Resetar">
+            <button type="button" class="reset" title="Resetar" (click)="onReset()">
               <app-icon name="restart_alt" [size]="14" color="muted" />
             </button>
           }
@@ -125,7 +133,9 @@ export class Slider {
   readonly showReset = input(true, { transform: booleanAttribute });
   readonly hints = input<string[]>([]);
   readonly formatter = input<(v: number) => string>();
+  readonly defaultValue = input<number | undefined>(undefined);
   readonly value = model(50);
+  readonly reset = output<void>();
 
   protected readonly displayValue = computed(() => {
     const v = this.value();
@@ -136,5 +146,13 @@ export class Slider {
 
   protected onInput(event: Event): void {
     this.value.set(Number((event.target as HTMLInputElement).value));
+  }
+
+  protected onReset(): void {
+    const fallback = this.defaultValue();
+    if (fallback != null) {
+      this.value.set(fallback);
+    }
+    this.reset.emit();
   }
 }

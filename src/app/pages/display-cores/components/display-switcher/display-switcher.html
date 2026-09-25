@@ -1,6 +1,11 @@
 <div class="switcher">
   @for (display of displays(); track display.id) {
-    <button type="button" class="display" [class.active]="display.active">
+    <button
+      type="button"
+      class="display"
+      [class.active]="display.active"
+      (click)="selectDisplay.emit(display.id)"
+    >
       <div class="top">
         <span class="role" [class.active]="display.active">
           <app-status-dot [tone]="display.active ? 'primary' : 'muted'" />

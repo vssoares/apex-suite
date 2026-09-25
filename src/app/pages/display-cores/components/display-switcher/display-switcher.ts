@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { StatusDot } from '../../../../shared/ui/status-dot/status-dot';
 import { Badge } from '../../../../shared/ui/badge/badge';
 
@@ -21,4 +21,5 @@ export interface DisplayItem {
 })
 export class DisplaySwitcher {
   readonly displays = input<DisplayItem[]>([]);
+  readonly selectDisplay = output<string>();
 }

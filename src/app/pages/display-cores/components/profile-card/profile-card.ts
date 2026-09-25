@@ -1,4 +1,4 @@
-import { booleanAttribute, Component, input } from '@angular/core';
+import { booleanAttribute, Component, input, output } from '@angular/core';
 import { Icon } from '../../../../shared/ui/icon/icon';
 import { Badge } from '../../../../shared/ui/badge/badge';
 import { Panel } from '../../../../shared/ui/panel/panel';
@@ -8,6 +8,10 @@ import { Panel } from '../../../../shared/ui/panel/panel';
   imports: [Icon, Badge, Panel],
   templateUrl: './profile-card.html',
   styleUrl: './profile-card.scss',
+  host: {
+    '(click)': 'select.emit()',
+    'style': 'cursor: pointer; display: block;',
+  },
 })
 export class ProfileCard {
   readonly title = input.required<string>();
@@ -20,4 +24,5 @@ export class ProfileCard {
   readonly rightLabel = input('');
   readonly rightValue = input('');
   readonly rightTone = input<'default' | 'primary'>('default');
+  readonly select = output<void>();
 }

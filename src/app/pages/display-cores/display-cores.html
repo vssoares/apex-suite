@@ -3,60 +3,37 @@
 
   <div class="top-row">
     <div class="displays">
-      <app-display-switcher [displays]="displays" />
+      <app-display-switcher
+        [displays]="displays()"
+        (selectDisplay)="onSelectDisplay($event)"
+      />
     </div>
     <div class="specs">
-      <app-spec-strip [specs]="specs" />
+      <app-spec-strip [specs]="specs()" />
     </div>
   </div>
 
   <section class="profiles">
     <div class="profiles-head">
       <span>Predefinições Rápidas de Perfil</span>
-      <span class="mono">Atalho Rápido: Ctrl + Alt + F1..F4</span>
+      <span class="mono">{{ status() }}</span>
     </div>
     <div class="profiles-grid">
-      <app-profile-card
-        title="FPS Competitivo / Black EQ"
-        description="Realce equilibrado de sombras, redução de desfoque e contraste dinâmico para visibilidade máxima de alvos."
-        icon="verified"
-        active
-        leftLabel="Black EQ"
-        leftValue="Nv. 12"
-        rightLabel="Vibrance"
-        rightValue="+22%"
-        rightTone="primary"
-      />
-      <app-profile-card
-        title="Vibrante Cyber / RPG"
-        description="Cores ricas, gama 2.4 profundo e nitidez adaptativa para ambientação detalhada e imersão visual."
-        icon="sports_esports"
-        code="P-02"
-        leftLabel="Gama"
-        leftValue="2.4"
-        rightLabel="Saturação"
-        rightValue="+40%"
-      />
-      <app-profile-card
-        title="Cinema HDR / Criativo"
-        description="Precisão cromática balanceada sRGB/DCI-P3 100%, temperatura D65 6500K para filmes e produtividade."
-        icon="movie"
-        code="P-03"
-        leftLabel="Temp"
-        leftValue="6500K"
-        rightLabel="DCI-P3"
-        rightValue="100%"
-      />
-      <app-profile-card
-        title="Modo Noturno / Anti-Fadiga"
-        description="Atenuação de espectro azul em 55%, luminância reduzida para mínimo estresse ocular em sessões noturnas."
-        icon="bedtime"
-        code="P-04"
-        leftLabel="Luz Azul"
-        leftValue="-55%"
-        rightLabel="Brilho"
-        rightValue="32%"
-      />
+      @for (preset of presets; track preset.id) {
+        <app-profile-card
+          [title]="preset.title"
+          [description]="preset.description"
+          [icon]="preset.icon"
+          [code]="preset.code"
+          [leftLabel]="preset.leftLabel"
+          [leftValue]="preset.leftValue"
+          [rightLabel]="preset.rightLabel"
+          [rightValue]="preset.rightValue"
+          [rightTone]="preset.rightTone ?? 'default'"
+          [active]="activeProfileId() === preset.id"
+          (select)="onSelectPreset(preset.id)"
+        />
+      }
     </div>
   </section>
 
@@ -70,5 +47,11 @@
     </div>
   </div>
 
-  <app-action-footer />
+  <app-action-footer
+    [profileLabel]="activeProfileLabel()"
+    [status]="status()"
+    [applying]="applying()"
+    (resetWindows)="onResetWindows()"
+    (applyProfile)="onApply()"
+  />
 </div>
