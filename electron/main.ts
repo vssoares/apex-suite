@@ -63,14 +63,22 @@ let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let isQuitting = false;
 
+// Em dev, userData separado evita conflito de cache/GPU com a instância da bandeja (instalada)
+if (isDev) {
+  app.setPath('userData', path.join(__dirname, '../../.electron-dev-data'));
+}
+
 // Necessário no Windows para Jump List da barra de tarefas funcionar
 if (process.platform === 'win32') {
-  app.setAppUserModelId(APP_USER_MODEL_ID);
+  app.setAppUserModelId(isDev ? `${APP_USER_MODEL_ID}.dev` : APP_USER_MODEL_ID);
 }
 
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
-  app.quit();
+  console.error(
+    '[apex] Outra instância de desenvolvimento já está aberta. Feche-a (bandeja) e rode de novo.',
+  );
+  app.exit(1);
 }
 
 function resolveIconPath(): string | undefined {
@@ -145,6 +153,12 @@ function showMainWindow(): void {
   if (!mainWindow) return;
   if (mainWindow.isMinimized()) mainWindow.restore();
   mainWindow.setSkipTaskbar(false);
+
+  // Em dev, recarrega o UI (evita janela preta de sessão antiga na bandeja)
+  if (isDev) {
+    void mainWindow.loadURL('http://localhost:4444');
+  }
+
   mainWindow.show();
   mainWindow.focus();
 }
@@ -305,7 +319,7 @@ function refreshWindowsShortcuts(): void {
       items: [
         {
           type: 'task',
-          title: 'Abrir Apex Suite',
+          title: 'Abrir Apex Color +',
           description: 'Mostrar a janela principal',
           program: process.execPath,
           args: isDev ? '.' : '',
@@ -316,7 +330,7 @@ function refreshWindowsShortcuts(): void {
         {
           type: 'task',
           title: 'Sair',
-          description: 'Encerrar Apex Suite',
+          description: 'Encerrar Apex Color +',
           program: process.execPath,
           args: quitLaunchArgs(),
           iconPath: icon,
@@ -335,7 +349,7 @@ function rebuildTrayMenu(): void {
   const recent = resolveRecentProfiles();
   tray.setContextMenu(
     Menu.buildFromTemplate([
-      { label: 'Abrir Apex Suite', click: () => showMainWindow() },
+      { label: 'Abrir Apex Color +', click: () => showMainWindow() },
       { type: 'separator' },
       { label: 'Perfis recentes', enabled: false },
       ...recent.map((entry) => ({
@@ -358,10 +372,52 @@ function createTray(): void {
   if (tray) return;
 
   tray = new Tray(createTrayImage());
-  tray.setToolTip('Apex Suite — clique direito para perfis');
+  tray.setToolTip('Apex Color + — clique direito para perfis');
   tray.on('click', () => showMainWindow());
   tray.on('double-click', () => showMainWindow());
   rebuildTrayMenu();
+}
+
+/** Menu Edit (oculto) — habilita Ctrl+C / Ctrl+V no Windows com frame:false. */
+function setupEditMenu(): void {
+  Menu.setApplicationMenu(
+    Menu.buildFromTemplate([
+      {
+        label: 'Editar',
+        submenu: [
+          { role: 'undo', label: 'Desfazer' },
+          { role: 'redo', label: 'Refazer' },
+          { type: 'separator' },
+          { role: 'cut', label: 'Recortar' },
+          { role: 'copy', label: 'Copiar' },
+          { role: 'paste', label: 'Colar' },
+          { role: 'selectAll', label: 'Selecionar tudo' },
+        ],
+      },
+    ]),
+  );
+}
+
+function attachContextMenu(win: BrowserWindow): void {
+  win.webContents.on('context-menu', (_event, params) => {
+    const template: Electron.MenuItemConstructorOptions[] = [];
+
+    if (params.selectionText?.trim()) {
+      template.push({ role: 'copy', label: 'Copiar' });
+    }
+    if (params.isEditable) {
+      template.push(
+        { role: 'cut', label: 'Recortar' },
+        { role: 'paste', label: 'Colar' },
+        { role: 'selectAll', label: 'Selecionar tudo' },
+      );
+    } else if (params.selectionText?.trim()) {
+      template.push({ role: 'selectAll', label: 'Selecionar tudo' });
+    }
+
+    if (!template.length) return;
+    Menu.buildFromTemplate(template).popup({ window: win });
+  });
 }
 
 function createWindow(): BrowserWindow {
@@ -370,26 +426,41 @@ function createWindow(): BrowserWindow {
     height: 900,
     minWidth: 1024,
     minHeight: 680,
-    frame: true,
-    title: 'Apex Suite',
-    backgroundColor: '#0b0d10',
+    frame: false,
+    transparent: false,
+    autoHideMenuBar: true,
+    title: 'Apex Color +',
+    backgroundColor: '#121722',
     show: false,
     skipTaskbar: false,
+    paintWhenInitiallyHidden: true,
     icon: resolveIconPath(),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
+      backgroundThrottling: false,
     },
   });
 
-  mainWindow.once('ready-to-show', () => {
+  const reveal = (): void => {
+    if (!mainWindow || mainWindow.isDestroyed()) return;
     if (wantsStartHidden(process.argv)) {
       hideToTray();
-    } else {
-      mainWindow?.show();
+      return;
     }
+    mainWindow.show();
+    mainWindow.focus();
+  };
+
+  mainWindow.once('ready-to-show', reveal);
+  attachContextMenu(mainWindow);
+
+  mainWindow.webContents.on('did-fail-load', (_e, code, desc, url) => {
+    console.error('[apex] did-fail-load', code, desc, url);
+    // Ainda revela a janela para não ficar “fantasma” na bandeja
+    reveal();
   });
 
   if (isDev) {
@@ -472,6 +543,7 @@ if (gotLock) {
 
   app.whenReady().then(() => {
     probeGammaRampApi();
+    setupEditMenu();
     createTray();
     refreshWindowsShortcuts();
 

@@ -1,5 +1,6 @@
-<app-sidebar />
-<div class="ml-64 flex h-full flex-col">
+<main class="app-window" data-purpose="app-main-window">
+  <app-titlebar />
+
   @if (update.status() === 'available' && update.pendingVersion(); as version) {
     <div class="update-bar">
       <span>Nova versão disponível: v{{ version }}</span>
@@ -12,7 +13,7 @@
     </div>
   }
 
-  <main class="app-scroll relative h-full w-full bg-surface-container-lowest px-6">
+  <div class="workspace">
     <router-outlet />
-  </main>
-</div>
+  </div>
+</main>

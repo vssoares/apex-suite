@@ -1,7 +1,7 @@
 {
   "name": "apex-suite",
-  "version": "0.1.2",
-  "description": "Apex Suite — desktop gaming utility",
+  "version": "0.1.3",
+  "description": "Apex Color + — calibração de display",
   "author": "vssoares",
   "private": true,
   "packageManager": "npm@10.9.8",
@@ -15,7 +15,8 @@
     "icons": "node scripts/generate-icons.mjs",
     "build:electron": "tsc -p electron/tsconfig.json",
     "build:app": "ng build --configuration production && npm run build:electron",
-    "electron:dev": "npm run build:electron && concurrently \"ng serve --port 4444\" \"wait-on http://localhost:4444 && electron .\"",
+    "electron:dev": "npm run build:electron && concurrently -k \"ng serve --port 4444\" \"wait-on http://localhost:4444 && electron . --user-data-dir=.electron-dev-data\"",
+    "electron:quit-dev": "electron . --user-data-dir=.electron-dev-data --apex-quit",
     "electron:build": "npm run dist:win",
     "dist": "npm run build:app && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder",
     "dist:win": "npm run build:app && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win",
@@ -23,7 +24,7 @@
   },
   "build": {
     "appId": "com.apexsuite.app",
-    "productName": "Apex Suite",
+    "productName": "Apex Color +",
     "files": [
       "dist/**/*",
       "dist-electron/**/*",
@@ -46,7 +47,7 @@
       "output": "release",
       "buildResources": "build"
     },
-    "artifactName": "ApexSuite-Setup-${version}.${ext}",
+    "artifactName": "ApexColorPlus-Setup-${version}.${ext}",
     "win": {
       "icon": "build/icon.ico",
       "target": [

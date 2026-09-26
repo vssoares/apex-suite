@@ -51,7 +51,7 @@ export class SettingsPage {
       this.openAtLogin.set(applied);
       this.status.set(
         applied
-          ? 'Apex Suite iniciará com o Windows (em segundo plano).'
+          ? 'Apex Color + iniciará com o Windows (em segundo plano).'
           : 'Inicialização com o Windows desativada.',
       );
     } catch {

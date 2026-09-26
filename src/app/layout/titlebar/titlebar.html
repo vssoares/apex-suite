@@ -1,73 +1,136 @@
-<header
-  class="fixed left-64 right-0 top-0 z-40 flex h-12 items-center justify-between border-b border-outline-variant bg-surface px-4"
-  style="-webkit-app-region: drag"
->
-  <div class="flex items-center gap-3" style="-webkit-app-region: no-drag">
-    <div
-      class="flex items-center gap-1.5 rounded bg-surface-container px-2.5 py-1 text-xs border border-outline-variant"
-    >
-      <app-status-dot tone="success" />
-      <span class="font-medium text-on-surface">Boost: Ativo</span>
+<header class="titlebar" data-purpose="desktop-header">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg class="logo-svg" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="apexCyberGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+            <stop offset="0%" stop-color="#00f2fe" />
+            <stop offset="50%" stop-color="#3b82f6" />
+            <stop offset="100%" stop-color="#10b981" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M24 4L41.32 14V34L24 44L6.68 34V14L24 4Z"
+          fill="#11151f"
+          fill-opacity="0.8"
+          stroke="url(#apexCyberGrad)"
+          stroke-linejoin="round"
+          stroke-width="2.5"
+        />
+        <path
+          d="M24 12L34.39 18V30L24 36L13.61 30V18L24 12Z"
+          fill="url(#apexCyberGrad)"
+          fill-opacity="0.18"
+          stroke="url(#apexCyberGrad)"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+        />
+        <path
+          d="M22 15L28.5 23H23.5L26 33L19.5 25H24.5L22 15Z"
+          fill="url(#apexCyberGrad)"
+          stroke="url(#apexCyberGrad)"
+          stroke-linejoin="round"
+          stroke-width="0.75"
+        />
+      </svg>
     </div>
-
-    @if (update.status() === 'available' && update.pendingVersion(); as version) {
-      <button
-        type="button"
-        class="flex items-center gap-1.5 rounded border border-primary/40 bg-primary/10 px-2.5 py-1 text-xs text-primary transition-colors hover:bg-primary/20"
-        (click)="installUpdate()"
-      >
-        <app-icon name="system_update_alt" [size]="14" color="primary" />
-        <span>Atualizar para v{{ version }}</span>
-      </button>
-    } @else if (update.status() === 'downloading') {
-      <div
-        class="flex items-center gap-1.5 rounded border border-outline-variant bg-surface-container px-2.5 py-1 text-xs text-on-surface-variant"
-      >
-        <app-status-dot tone="warning" />
-        <span class="font-mono">Baixando {{ update.progress() }}%</span>
-      </div>
-    } @else if (update.status() === 'error') {
-      <button
-        type="button"
-        class="flex items-center gap-1.5 rounded border border-error/40 bg-error/10 px-2.5 py-1 text-xs text-error"
-        (click)="update.dismiss()"
-      >
-        <span>{{ update.error() || 'Erro na atualização' }}</span>
-      </button>
-    }
+    <span class="brand-name">Apex <span class="brand-accent">Color</span> +</span>
   </div>
 
-  <div class="flex items-center gap-2" style="-webkit-app-region: no-drag">
-    <div
-      class="grid h-7 w-7 place-items-center rounded-full border border-outline-variant bg-surface-container-high"
-    >
-      <app-icon name="person" [size]="16" color="muted" />
+  <nav class="nav-chips" aria-label="Navegação principal">
+    @for (item of navItems; track item.id) {
+      @if (item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="chip"
+        >
+          {{ item.label }}
+          @if (item.badge) {
+            <span class="chip-badge">{{ item.badge }}</span>
+          }
+        </a>
+      } @else {
+        <button type="button" class="chip">
+          {{ item.label }}
+          @if (item.badge) {
+            <span class="chip-badge">{{ item.badge }}</span>
+          }
+        </button>
+      }
+    }
+    <!-- <div class="nav-divider" aria-hidden="true"></div>
+    <span class="chip chip-status">
+      DirectX
+      <span class="live-dot" aria-hidden="true"></span>
+    </span> -->
+  </nav>
+
+  <div class="right">
+    @if (update.status() === 'available' && update.pendingVersion(); as version) {
+      <button type="button" class="update-chip" (click)="installUpdate()">
+        Atualizar v{{ version }}
+      </button>
+    } @else if (update.status() === 'downloading') {
+      <span class="update-chip muted">Baixando {{ update.progress() }}%</span>
+    }
+
+    <div class="profile-wrap">
+      <button
+        type="button"
+        class="profile-chip"
+        title="Perfis de cores"
+        [attr.aria-expanded]="menuOpen()"
+        aria-haspopup="menu"
+        (click)="toggleProfileMenu($event)"
+      >
+        <span class="profile-avatar">{{ activeInitial() }}</span>
+        <span class="profile-label">{{ activeLabel() }}</span>
+        <app-icon name="expand_more" [size]="14" color="muted" />
+      </button>
+
+      @if (menuOpen()) {
+        <div class="profile-menu" role="menu" (click)="keepMenu($event)">
+          <div class="menu-heading">Perfis recentes</div>
+          @if (recentProfiles().length === 0) {
+            <p class="menu-empty">Nenhum perfil recente</p>
+          } @else {
+            @for (entry of recentProfiles(); track entry.id) {
+              <button
+                type="button"
+                class="menu-item"
+                role="menuitem"
+                [class.active]="activeProfileId() === entry.id"
+                (click)="selectProfile(entry.id, $event)"
+              >
+                <span class="menu-avatar">{{ (entry.shortTitle || entry.title).charAt(0) }}</span>
+                <span class="menu-title">{{ entry.shortTitle || entry.title }}</span>
+                @if (activeProfileId() === entry.id) {
+                  <app-icon name="check_circle" [size]="14" color="amber" />
+                }
+              </button>
+            }
+          }
+        </div>
+      }
     </div>
-    <div class="ml-1 flex h-7 items-center border-l border-outline-variant pl-2">
-      <button
-        type="button"
-        class="grid h-7 w-7 place-items-center rounded text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
-        (click)="minimize()"
-        aria-label="Minimizar"
-      >
-        <app-icon name="minimize" [size]="15" color="muted" />
+
+    <div class="window-actions">
+      <button type="button" class="win-btn" (click)="minimize()" title="Minimizar" aria-label="Minimizar">
+        <app-icon name="minimize" [size]="14" color="muted" />
+      </button>
+      <button type="button" class="win-btn" (click)="maximize()" title="Maximizar" aria-label="Maximizar">
+        <app-icon name="crop_square" [size]="14" color="muted" />
       </button>
       <button
         type="button"
-        class="grid h-7 w-7 place-items-center rounded text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
-        (click)="maximize()"
-        aria-label="Maximizar"
-      >
-        <app-icon name="crop_square" [size]="15" color="muted" />
-      </button>
-      <button
-        type="button"
-        class="grid h-7 w-7 place-items-center rounded text-on-surface-variant transition-colors hover:bg-surface-container hover:text-error"
+        class="win-btn close"
         (click)="close()"
-        aria-label="Minimizar para a bandeja"
-        title="Minimizar para a bandeja (área à direita)"
+        title="Minimizar para a bandeja"
+        aria-label="Fechar"
       >
-        <app-icon name="close" [size]="15" color="muted" />
+        <app-icon name="close" [size]="14" color="muted" />
       </button>
     </div>
   </div>

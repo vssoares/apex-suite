@@ -1,7 +1,33 @@
 :host {
   display: block;
-  height: 100vh;
-  background: var(--color-surface-container-lowest);
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  background: #121722;
+  color: #e2e8f0;
+  box-sizing: border-box;
+}
+
+.app-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  position: relative;
+  background: #121722;
+  color: #e2e8f0;
+}
+
+.workspace {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  background: #0c0f17;
+  color: #e2e8f0;
 }
 
 .update-bar {
@@ -9,7 +35,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.25rem;
   border-bottom: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
   background: color-mix(in srgb, var(--primary) 12%, transparent);
   font-size: 0.75rem;
@@ -25,9 +51,9 @@
   border-radius: var(--radius-lg);
   border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
   background: var(--primary-strong);
-  color: #fff;
+  color: var(--on-primary);
   font-size: 0.6875rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .mono {

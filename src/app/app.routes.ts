@@ -6,7 +6,7 @@ export const routes: Routes = [
     path: '',
     component: Shell,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'game-booster' },
+      { path: '', pathMatch: 'full', redirectTo: 'display-cores' },
       {
         path: 'game-booster',
         loadComponent: () =>

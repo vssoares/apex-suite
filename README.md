@@ -1,6 +1,6 @@
-# Apex Suite
+# Apex Color +
 
-Desktop gaming utility (Electron + Angular).
+Calibração de display (Electron + Angular).
 
 ## Desenvolvimento
 
@@ -15,7 +15,7 @@ npm run electron:dev
 npm run dist:win
 ```
 
-O instalador NSIS sai em `release/ApexSuite-Setup-<versão>.exe`.
+O instalador NSIS sai em `release/ApexColorPlus-Setup-<versão>.exe`.
 
 ## Release no GitHub Actions
 

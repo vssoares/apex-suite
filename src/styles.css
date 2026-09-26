@@ -121,13 +121,35 @@
   body {
     margin: 0;
     padding: 0;
+    width: 100%;
     height: 100%;
     overflow: hidden;
     font-family: var(--font-sans);
-    background: var(--color-surface-container-lowest);
-    color: var(--color-on-surface);
+    background: #121722;
+    color: #e2e8f0;
     -webkit-font-smoothing: antialiased;
+    user-select: text;
+  }
+
+  app-root {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #121722;
+    color: #e2e8f0;
+  }
+
+  button,
+  [role='button'],
+  nav,
+  .titlebar {
     user-select: none;
+  }
+
+  input,
+  textarea,
+  [contenteditable='true'] {
+    user-select: text;
   }
 
   button,
